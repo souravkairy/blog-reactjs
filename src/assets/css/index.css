@@ -1,0 +1,56 @@
+.hero_section{
+    background-color: rgb(231, 231, 231);
+    min-height: 600px;
+    padding-left: 5rem;
+    padding-right: 5rem;
+}
+.blog_section{
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+.footerSection{
+    background-color: rgb(231, 231, 231);
+    min-height: 300px;
+    padding-left: 4rem;
+    padding-right: 4rem;
+}
+.signInsection
+{
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+.profileCard
+{
+    padding: 17px;
+}
+.tblImage{
+    width: 30px;
+    border: 1px solid yellowgreen;
+    margin: 4px;
+    padding: 4px;
+}
+.headerProfileImage
+{
+    width: 40px;
+}
+.blogdata{
+    width: 96%;
+}
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .hero_section{
+      padding: 2rem;
+      text-align: center;
+    }
+    .blogdata{
+        width: 100%;
+        margin: 1rem;
+    }
+    .footerSection{
+        padding: 1rem;
+    }
+
+
+}
