@@ -181,7 +181,7 @@ function MyProfile() {
             <Modal show={editshow} onHide={edithandleClose}>
                 <Form>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Blog Post</Modal.Title>
+                        <Modal.Title>Edit Blog</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
