@@ -10,7 +10,8 @@ class App_url{
     static BlogListByPf =this.base_url+'/BlogListByPf'
     static GetAllBlog =this.base_url+'/GetAllBlog'
     static getBlog =this.base_url+'/getBlog'
-    static getBlogByid =this.base_url+'/getBlogByid'
+    static getBlogByidForEdit =this.base_url+'/getBlogByidForEdit'
+    static updateBlog =this.base_url+'/updateBlog'
 
     static addComment =this.base_url+'/addComment'
     static getCommentByBlog =this.base_url+'/getCommentByBlog'

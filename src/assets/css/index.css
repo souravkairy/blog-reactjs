@@ -36,6 +36,12 @@
 .blogdata{
     width: 96%;
 }
+.carouserStyle{
+    height: 700px;
+    margin: auto;
+
+}
+
 
 
 /* Extra small devices (phones, 600px and down) */
@@ -50,6 +56,10 @@
     }
     .footerSection{
         padding: 1rem;
+    }
+    .carouserStyle{
+        height: 250px;
+       
     }
 
 

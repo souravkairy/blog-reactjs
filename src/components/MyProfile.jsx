@@ -7,7 +7,7 @@ import image3 from '../assets/img/trash.svg'
 import css from '../assets/css/index.css'
 import { useHistory } from 'react-router-dom'
 import App_url from '../rest_api/App_url'
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 function MyProfile() {
@@ -16,37 +16,38 @@ function MyProfile() {
     useEffect(() => {
         getData();
     }, [])
-
+    
     //modal
     const [show, setShow] = useState(false);
     const [editshow, seteditShow] = useState(false);
-   
-
+    
+    
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false); //modal close function
-    const edithandleShow = () => seteditShow(true);
+    const edithandleShow = () => seteditShow(true); ///edit modal
     const edithandleClose = () => seteditShow(false); //modal close function
-
+    
     const history = useHistory()
+    //logout
     function logout() {
         localStorage.clear();
         history.push("/")
     }
     let user = JSON.parse(localStorage.getItem('user-info'))
-
+    
     //add data
     const [name, setName] = useState("")
     const [content, setContent] = useState("")
     const [image, setImage] = useState("")
     const user_id = user && user[0]['id']
     async function SavaData() {
-        // console.warn(name,image,content)
+    
         const formData = new FormData();
         formData.append('name', name);
         formData.append('image', image);
         formData.append('content', content);
         formData.append('user_id', user_id);
-
+    
         let result = await fetch(App_url.addBlog,
             {
                 method: 'POST',
@@ -56,7 +57,7 @@ function MyProfile() {
         setShow(false); //modal
     }
     //delete data
-
+    
     async function deleteOperation(id) {
         let result = await fetch("http://127.0.0.1:8000/deleteBlog/" + id,
             {
@@ -65,14 +66,15 @@ function MyProfile() {
         result = await result.json();
         console.warn(result)
         getData();
-
-
+    
     }
+    //get blog list by user_id
     async function getData() {
         let result = await fetch("http://127.0.0.1:8000/BlogListByPf/" + user_id);
         result = await result.json();
         setData(result)
     }
+    //get single blog data
     async function getblog(id) {
         let result = await fetch("http://127.0.0.1:8000/getBlog/" + id,
             {
@@ -83,18 +85,47 @@ function MyProfile() {
         localStorage.setItem("blog-details", JSON.stringify(result))
         history.push("/blogDetails")
     }
-    // const [foreditdata, editdata] = useState([]);
-    // async function editblog(id) {
+    
+    // edit in modal
+    const [foreditdata, editdata] = useState([]);
+    const [upname, setupdateName] = useState("")
+    const [upcontent, setupdateContent] = useState("")
+    const [upimage, setupdateImage] = useState("")
+    async function editblog(id) {
+
+        let result = await fetch("http://127.0.0.1:8000/getBlogByidForEdit/" + id,
+            {
+                method: 'GET'
+            });
+        result = await result.json();
+        editdata(result)
+        // setupdateName(result.name)
+        // setupdateContent(result.content)
+        // setupdateImage(result.Image)
+        console.warn(result)
+        edithandleShow()
         
-    //     let result = await fetch("http://127.0.0.1:8000/getBlogByid/" + id,
-    //         {
-    //             method: 'GET'
-    //         });
-    //         result = await result.json();
-    //         editdata(result)
-    //         console.warn(foreditdata)
-    //         edithandleShow()
-    // }
+    }
+    //update data
+    async function UpdateData(id)
+    {
+        console.warn(id,name,content)
+        const formData = new FormData();
+        formData.append('name', upname);
+        formData.append('image', upimage);
+        formData.append('content', upcontent);
+        // formData.append('user_id', upuser_id);
+    
+        let result = await fetch("http://127.0.0.1:8000/updateBlog/"+ id,
+            {
+                method: 'POST',
+                body: formData
+            });
+            // result = await result.json();
+            console.warn(result)
+        getData();
+        edithandleClose()
+    }
     return (
         <>
             <Container>
@@ -136,14 +167,13 @@ function MyProfile() {
                                             <td><Image className="w-50" src={"http://127.0.0.1:8000/" + item.Image} /></td>
                                             <td>
                                                 <span type="button" onClick={() => getblog(item.id)}><Image className="tblImage" src={image1} /></span>
-                                                {/* <span type="button" onClick={() => editblog(item.id)}><Image className="tblImage" src={image2} /></span> */}
-                                                <span type="button"><Image className="tblImage" src={image2} /></span>
+                                                <span type="button" onClick={() => editblog(item.id)}><Image className="tblImage" src={image2} /></span>
+                                                {/* <Link to={"editBlog/"+item.id }> <span type="button"><Image className="tblImage" src={image2} /></span></Link> */}
                                                 <span type="button" onClick={() => deleteOperation(item.id)}> <Image className="tblImage" src={image3} /></span>
                                             </td>
                                         </tr>
                                     )
                                 }
-
                             </tbody>
                         </Table>
                     </Col>
@@ -186,23 +216,30 @@ function MyProfile() {
                     <Modal.Body>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Title</Form.Label>
-                            {/* <Form.Control type="text" placeholder="Enter Title" defaultValue={foreditdata[0]['name']} /> */}
-                            <Form.Control type="text" placeholder="Enter Title" />
+                        
+                            <Form.Control type="text" placeholder="Enter Title" defaultValue={foreditdata.name} onChange={(e) => setupdateName(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Content</Form.Label>
-                            <Form.Control as="textarea" rows={3}  />
+                            <Form.Control as="textarea" rows={3} defaultValue={foreditdata.content} onChange={(e) => setupdateContent(e.target.value)}/>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Image</Form.Label>
-                            <Form.Control type="file" placeholder="Add Image"/>
-                        </Form.Group>
+                        <Row>
+                            <Col lg={6} md={6} sm={6}>
+                                <Form.Group className="mb-3" controlId="formBasicEmail">
+                                    <Form.Label>Image</Form.Label>
+                                    <Form.Control type="file" placeholder="Add Image"  onChange={(e) => setupdateImage(e.target.files[0])}/>
+                                </Form.Group>
+                            </Col>
+                            <Col lg={6} md={6} sm={6}>
+                                <Image className="w-50" src={"http://127.0.0.1:8000/" + foreditdata.Image}/>
+                            </Col>
+                        </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={edithandleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={SavaData}>
+                        <Button variant="primary" onClick={()=>UpdateData(foreditdata.id)}>
                             Update
                         </Button>
                     </Modal.Footer>
