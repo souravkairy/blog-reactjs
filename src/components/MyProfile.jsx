@@ -7,14 +7,11 @@ import image3 from '../assets/img/trash.svg'
 import '../assets/css/index.css'
 import { useHistory } from 'react-router-dom'
 import App_url from '../rest_api/App_url'
-import { Link } from 'react-router-dom'
 import "../assets/css/Pagination.css";
 import ReactPaginate from 'react-paginate';
 
-
 function MyProfile() {
-
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([]); //retrieve all data
     useEffect(() => {
         getData();
     }, [])
@@ -22,7 +19,6 @@ function MyProfile() {
     //modal
     const [show, setShow] = useState(false);
     const [editshow, seteditShow] = useState(false);
-
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false); //modal close function
     const edithandleShow = () => seteditShow(true); ///edit modal
@@ -34,6 +30,7 @@ function MyProfile() {
         localStorage.clear();
         history.push("/")
     }
+    //user info from browser local storage
     let user = JSON.parse(localStorage.getItem('user-info'))
 
     //add data
@@ -41,14 +38,13 @@ function MyProfile() {
     const [content, setContent] = useState("")
     const [image, setImage] = useState("")
     const user_id = user && user[0]['id']
-    async function SavaData() {
 
+    async function SavaData() {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('image', image);
         formData.append('content', content);
         formData.append('user_id', user_id);
-
         let result = await fetch(App_url.addBlog,
             {
                 method: 'POST',
@@ -58,7 +54,6 @@ function MyProfile() {
         setShow(false); //modal
     }
     //delete data
-
     async function deleteOperation(id) {
         let result = await fetch("http://127.0.0.1:8000/deleteBlog/" + id,
             {
@@ -126,44 +121,40 @@ function MyProfile() {
         getData();
         edithandleClose()
     }
-
+    //search data from datatable
+    const [searchItem, setSearchItem] = useState([])
     //paginations 
-
     const [pageNumber, setPageNumber] = useState(0);
     const userPerPage = 4
     const pagesVisited = pageNumber * userPerPage
     const displayUser = data
         .slice(pagesVisited, pagesVisited + userPerPage)
+        .filter((val) => {
+            if (searchItem == "") {
+                return val
+            } else if (val.name.toLowerCase().includes(searchItem.toLowerCase())) {
+                return val
+            }
+        })
         .map((item) => {
             return (
                 <tr>
-                <td>1</td>
-                <td>{item.name}</td>
-                <td><Image className="w-50" src={"http://127.0.0.1:8000/" + item.Image} /></td>
-                <td>
-                    <span type="button" onClick={() => getblog(item.id)}><Image className="tblImage" src={image1} /></span>
-                    <span type="button" onClick={() => editblog(item.id)}><Image className="tblImage" src={image2} /></span>
-                    {/* <Link to={"editBlog/"+item.id }> <span type="button"><Image className="tblImage" src={image2} /></span></Link> */}
-                    <span type="button" onClick={() => deleteOperation(item.id)}> <Image className="tblImage" src={image3} /></span>
-                </td>
-            </tr>
+                    <td>{item.name}</td>
+                    <td><Image className="w-50" src={"http://127.0.0.1:8000/" + item.Image} /></td>
+                    <td>
+                        <span type="button" onClick={() => getblog(item.id)}><Image className="tblImage" src={image1} /></span>
+                        <span type="button" onClick={() => editblog(item.id)}><Image className="tblImage" src={image2} /></span>
+                        {/* <Link to={"editBlog/"+item.id }> <span type="button"><Image className="tblImage" src={image2} /></span></Link> */}
+                        <span type="button" onClick={() => deleteOperation(item.id)}> <Image className="tblImage" src={image3} /></span>
+                    </td>
+                </tr>
             );
         });
 
     const pageCount = Math.ceil(data.length / userPerPage);
-
     const changePage = ({ selected }) => {
         setPageNumber(selected);
     };
-
-
-
-
-
-
-
-
-
     return (
         <>
             <Container>
@@ -194,16 +185,16 @@ function MyProfile() {
                         </Row>
                         <Row>
                             <Col lg={9} md={6} sm={12}>
-                                
+
                             </Col>
                             <Col lg={3} md={6} sm={12}>
-                                <Form.Control size="sm" type="text" placeholder="Search" />
+                                <Form.Control size="sm" type="text" placeholder="Search" onChange={(event) => { setSearchItem(event.target.value); }} />
                             </Col>
                         </Row>
                         <Table striped bordered hover className="mt-2">
                             <thead>
                                 <tr>
-                                    <th style={{ width: "5%" }}>#</th>
+
                                     <th>Title</th>
                                     <th style={{ width: "20%" }}>Image</th>
 
@@ -211,16 +202,9 @@ function MyProfile() {
                                 </tr>
                             </thead>
                             <tbody>
-                            {displayUser}
+                                {displayUser}
                             </tbody>
                         </Table>
-                        {/* <Pagination className="float-right">
-                            <Pagination.Prev />
-                            <Pagination.Item>{1}</Pagination.Item>
-                            <Pagination.Item active>{2}</Pagination.Item>
-                            <Pagination.Item>{3}</Pagination.Item>
-                            <Pagination.Next />
-                        </Pagination> */}
                         <ReactPaginate
                             previousLabel={"Previous"}
                             nextLabel={"Next"}
@@ -246,7 +230,7 @@ function MyProfile() {
                             <Form.Control type="text" placeholder="Enter Title" onChange={(e) => setName(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>Content</Form.Label>
+                            <Form.Label>Description</Form.Label>
                             <Form.Control as="textarea" rows={3} onChange={(e) => setContent(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -276,7 +260,7 @@ function MyProfile() {
                             <Form.Control type="text" placeholder="Enter Title" defaultValue={foreditdata.name} onChange={(e) => setupdateName(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>Content</Form.Label>
+                            <Form.Label>Description</Form.Label>
                             <Form.Control as="textarea" rows={3} defaultValue={foreditdata.content} onChange={(e) => setupdateContent(e.target.value)} />
                         </Form.Group>
                         <Row>

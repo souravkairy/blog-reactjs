@@ -18,19 +18,28 @@ function SignIn() {
 
     const history = useHistory()
     async function SignIn() {
-        let obj = { email, password };
-        let result = await fetch(App_url.userSighIn,
-            {
-                method: 'POST',
-                body: JSON.stringify(obj),
-                headers: {
-                    "Content-Type": 'application/x-www-form-urlencoded',
-                    "Accept": 'application/json'
-                }
-            })
-        result = await result.json()
-        localStorage.setItem("user-info", JSON.stringify(result))
-        history.push("/")
+        if (!email || !password) {
+            alert('From Data Missing, Please fill the form properly...')
+        }
+        else {
+            let obj = { email, password };
+            let result = await fetch(App_url.userSighIn,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(obj),
+                    headers: {
+                        "Content-Type": 'application/x-www-form-urlencoded',
+                        "Accept": 'application/json'
+                    }
+                })
+            result = await result.json()
+            alert(result)
+            localStorage.setItem("user-info", JSON.stringify(result))
+            history.push("/")
+
+
+        }
+
 
     }
     return (
@@ -48,9 +57,9 @@ function SignIn() {
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control type="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                            {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
                                 <Form.Check type="checkbox" label="I agree with terms & conditions" />
-                            </Form.Group>
+                            </Form.Group> */}
                             <Button onClick={SignIn} variant="warning">
                                 Submit
                             </Button>

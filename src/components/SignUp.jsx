@@ -19,49 +19,64 @@ function SignUp() {
     const [password, setPassword] = useState("")
     const history = useHistory()
 
-    async function SignUp() {
-        let obj = { name, email, phone, password };
-        let result = await fetch(App_url.userSighUp,
-            {
-                method: 'POST',
-                body: JSON.stringify(obj),
-                headers: {
-                    "Content-Type": 'application/x-www-form-urlencoded',
-                    "Accept": 'application/json'
-                }
-            })
-        result = await result.json()
-        localStorage.setItem("user-info", JSON.stringify(result))
-        history.push("/")
-
-    }
-
+          async function SignUp() {
+              if (!name || !email || !phone || !password) {
+                    alert('From Data Missing, Please fill the form properly...');          
+              }
+              else{
+                let obj = { name, email, phone, password };
+                let result = await fetch(App_url.userSighUp,
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj),
+                        headers: {
+                            "Content-Type": 'application/x-www-form-urlencoded',
+                            "Accept": 'application/json'
+                        }
+                    })
+                result = await result.json()
+                localStorage.setItem("user-info", JSON.stringify(result))
+                history.push("/")
+              }
+        }
     return (
         <>
             <Container>
                 <Row className="d-flex align-items-center signInsection">
                     <Col lg={6} md={6} sm={12}>
                         <h1>Sign-Up</h1>
-                        <Form>
+                        <Form data-toggle="validator">
                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Name</Form.Label>
-                                <Form.Control type="text" placeholder="Enter Name" value={name} onChange={(e) => setName(e.target.value)} />
+                                <Form.Control type="text" placeholder="Enter Name" value={name} onChange={(e) => setName(e.target.value)}
+                                required
+                                />
+                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicEmail" >
                                 <Form.Label>Mobile Number</Form.Label>
-                                <Form.Control type="text" placeholder="Enter Mobile Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                                <Form.Control type="text" placeholder="Enter Mobile Number" value={phone} onChange={(e) => setPhone(e.target.value)}
+                                required
+                                />
+                                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} 
+                                required
+                                />
+                                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <Form.Control type="password" placeholder="Enter Password" value={password} onChange={(e) => setPassword(e.target.value)}
+                                required 
+                                />
+                                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                                <Form.Check type="checkbox" label="I agree with terms & conditions" />
-                            </Form.Group>
+                            {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                                <Form.Check value={password} type="checkbox" label="I agree with terms & conditions" />
+                            </Form.Group> */}
                             <Button onClick={SignUp} variant="warning">
                                 Submit
                             </Button>
