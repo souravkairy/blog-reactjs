@@ -33,14 +33,16 @@ function SignIn() {
                     }
                 })
             result = await result.json()
-            alert(result)
-            localStorage.setItem("user-info", JSON.stringify(result))
-            history.push("/")
 
 
+            if (result.length > 0) {
+                localStorage.setItem("user-info", JSON.stringify(result))
+                history.push("/")
+            } else {
+                alert("Wrong Credential")
+                // history.push('/signIn')
+            }
         }
-
-
     }
     return (
         <>
